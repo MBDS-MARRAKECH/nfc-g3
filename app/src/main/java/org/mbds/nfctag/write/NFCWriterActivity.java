@@ -1,10 +1,16 @@
 package org.mbds.nfctag.write;
 
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -19,8 +25,16 @@ public class NFCWriterActivity extends AppCompatActivity {
 
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
+    public static TagType TAG = TagType.TEXT;
 
     private NfcTagViewModel viewModel;
+
+    EditText editText;
+    Button valide;
+    RadioGroup radioGroup;
+    RadioButton option1;
+    RadioButton option2;
+    RadioButton option3;
 
     // TODO Analyser le code et comprendre ce qui est fait
     // TODO Ajouter un formulaire permettant à un utilisateur d'entrer le texte à mettre dans le tag
@@ -32,6 +46,34 @@ public class NFCWriterActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.write_tag_layout);
+
+        editText = (EditText)findViewById(R.id.message);
+        radioGroup = (RadioGroup) findViewById(R.id.rgChoix);
+        valide = (Button) findViewById(R.id.tValider);
+        option1 = (RadioButton) findViewById(R.id.option1);
+        option2 = (RadioButton) findViewById(R.id.option2);
+        option3 = (RadioButton) findViewById(R.id.option3);
+
+
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                if (checkedId == R.id.option1) {
+                    TAG = TagType.TEXT;
+
+                }
+                else if (checkedId == R.id.option2) {
+                    TAG = TagType.PHONE;
+
+                }
+                else  if (checkedId == R.id.option3) {
+                    TAG = TagType.URL;
+                }
+
+            }
+        });
 
         // init ViewModel
         viewModel = new ViewModelProvider(this).get(NfcTagViewModel.class);
@@ -48,6 +90,8 @@ public class NFCWriterActivity extends AppCompatActivity {
                 addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         // single top flag avoids activity multiple instances launching
     }
+
+
 
     @Override
     protected void onResume() {
@@ -108,7 +152,7 @@ public class NFCWriterActivity extends AppCompatActivity {
                 || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
             // get the tag object from the received intent
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            viewModel.writeTag("hello MBDS", tag, TagType.TEXT);
+            viewModel.writeTag(editText.getText().toString(), tag, TAG);
         } else {
             // TODO Indiquer à l'utilisateur que ce type de tag n'est pas supporté
         }
