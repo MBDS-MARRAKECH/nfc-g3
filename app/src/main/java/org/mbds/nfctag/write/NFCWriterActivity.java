@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -35,6 +36,10 @@ public class NFCWriterActivity extends AppCompatActivity {
     RadioButton option1;
     RadioButton option2;
     RadioButton option3;
+    View nfcImage;
+    TextView textView2;
+    TextView textView1;
+    boolean readCard ;
 
     // TODO Analyser le code et comprendre ce qui est fait
     // TODO Ajouter un formulaire permettant à un utilisateur d'entrer le texte à mettre dans le tag
@@ -48,11 +53,34 @@ public class NFCWriterActivity extends AppCompatActivity {
         setContentView(R.layout.write_tag_layout);
 
         editText = (EditText)findViewById(R.id.message);
+        nfcImage = (View) findViewById(R.id.card_reader_back2);
+        textView2 = (TextView) findViewById(R.id.txtView2) ;
+        textView1 = (TextView) findViewById(R.id.txtView1) ;
         radioGroup = (RadioGroup) findViewById(R.id.rgChoix);
         valide = (Button) findViewById(R.id.tValider);
         option1 = (RadioButton) findViewById(R.id.option1);
         option2 = (RadioButton) findViewById(R.id.option2);
         option3 = (RadioButton) findViewById(R.id.option3);
+
+        nfcImage.setVisibility(View.INVISIBLE);
+        textView2.setVisibility(View.INVISIBLE);
+
+        readCard = false;
+        valide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                nfcImage.setVisibility(View.VISIBLE);
+                textView2.setVisibility(View.VISIBLE);
+
+                radioGroup.setVisibility(View.INVISIBLE);
+                editText.setVisibility(View.INVISIBLE);
+                valide.setVisibility(View.INVISIBLE);
+                textView1.setVisibility(View.INVISIBLE);
+
+                readCard = true;
+
+            }
+        });
 
 
 
@@ -151,8 +179,9 @@ public class NFCWriterActivity extends AppCompatActivity {
                 || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)
                 || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
             // get the tag object from the received intent
+            if(readCard){
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            viewModel.writeTag(editText.getText().toString(), tag, TAG);
+            viewModel.writeTag(editText.getText().toString(), tag, TAG);}
         } else {
             // TODO Indiquer à l'utilisateur que ce type de tag n'est pas supporté
         }
