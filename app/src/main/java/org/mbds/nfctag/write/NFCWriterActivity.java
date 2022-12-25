@@ -1,11 +1,14 @@
 package org.mbds.nfctag.write;
 
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -129,13 +132,25 @@ public class NFCWriterActivity extends AppCompatActivity {
         if (nfcAdapter != null) {
             if (!nfcAdapter.isEnabled()) {
                 // TODO afficher un message d'erreur à l'utilisateur si le NFC n'est pas activé
+                // solutution
+                Toast.makeText(this, "Activer NFC", Toast.LENGTH_SHORT).show();
                 // TODO rediriger l'utilisateur vers les paramètres du téléphone pour activer le NFC
+                // solutution
+                Intent intent=new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+                ComponentName cName = new ComponentName("com.android.phone","com.android.phone.Settings");
+                intent.setComponent(cName);
             } else {
                 nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
             }
         } else {
             // TODO afficher un message d'erreur à l'utilisateur si le téléphone n'est pas NFC-capable
             // TODO Fermer l'activité ou rediriger l'utilisateur vers une autre activité
+            //solution
+            AlertDialog.Builder ErrorMsg = new AlertDialog.Builder(this);
+            ErrorMsg.setMessage("le téléphone n'a pas de NFC")
+                    .setTitle("Erreur");
+            ErrorMsg.create();
+            ErrorMsg.show();
         }
 
         viewModel.getTagWritten().observe(this, new Observer<Void>() {
@@ -184,6 +199,8 @@ public class NFCWriterActivity extends AppCompatActivity {
             viewModel.writeTag(editText.getText().toString(), tag, TAG);}
         } else {
             // TODO Indiquer à l'utilisateur que ce type de tag n'est pas supporté
+            Toast.makeText(NFCWriterActivity.this, "Ce Tag n'est pas supporté", Toast.LENGTH_SHORT).show();
+
         }
     }
 }
