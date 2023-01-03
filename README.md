@@ -3,6 +3,17 @@
 Dans ce projet, vous allez apprendre à lire et à écrire des tags NFC sur Android. 
 L'objectif est de vous familiariser avec les API Android pour la lecture et l'écriture de tags NFC.
 
+## Menbres de l'equipe:
+- Amine Aboutaj
+- Ezzibari Oumayma
+- Sara AIT ELMAHJOUB
+- LOZAD ACHRAF
+- CHEMLAL ELMEHDI
+- HAMZA JANATE
+- OULOUDA YOUSSEF 
+- ELHARIRI ILYAS
+
+
 ## Fonctionnalités
 - Lecture de tags NFC
 - Ecriture de tags NFC
